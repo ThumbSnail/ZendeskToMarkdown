@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Zendesk to Markdown</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div id="container">
+		<h1>Zendesk to Markdown</h1>
+		<div id="entry-container">
+			<p class="bold">Input Zendesk Comment HTML</p>
+			<textarea id="text-entry"></textarea>
+		</div>
+		<div id="output-container">
+			<p class="bold">Output Markdown for Macro</p>
+			<div id="output" contenteditable="true"></div>
+		</div>
+		<button id="convert">Convert to Markdown</button>
+		<p class="description">How to Use:</p>
+		<ol>
+			<li>In Google Chrome, in Zendesk, Right-click on comment reply box -> "Inspect"</li>
+			<li>In Google Chrome, Right-click on div class="zd-comment" -> "Edit as HTML"</li>
+			<li>Select all, Copy all</li>
+			<li>Paste into left box</li>
+			<li>Click button</li>
+			<li>Copy output into Zendesk's Macro box</li>
+		</ol>
+		<p class="description">Currently supports:</p>
+		<ul>
+			<li>Bold</li>
+			<li>Italics</li>
+			<li>Lists: Ordered and Unordered</li>
+			<li>Headers</li>
+			<li>Quotes</li>
+			<li>Links</li>
+			<li>Div Removal</li>
+			<li>P Removal</li>
+			<li>Span Removal</li>
+			<li>Keeps &amp;nbsp; (double spaces)!</li>
+		</ul>
+		<p class="description">NOT supported:</p>
+		<ul>
+			<li>Nested quotes/lists</li>
+		</ul>
+	</div>
+</body>
+<script src="js/main.js"></script>
+</html>
