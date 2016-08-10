@@ -1,0 +1,64 @@
+body {
+	background-color: #F0F8FF;
+}
+
+#container {
+	width: 800px;
+	margin: auto;
+	text-align: center;
+}
+
+#entry-container {
+	float: left;
+	width: 400px;
+	height: 300px;
+}
+
+#entry-container p {
+	color: #00d;
+}
+
+#text-entry {
+	font-size: 16px;
+	width: 380px;
+	height: 296px;
+}
+
+#output-container {
+	display: inline-block;
+	width: 400px;
+	height: 300px;
+}
+
+#output-container p {
+	color: #d00;
+}
+
+#output {
+	background-color: #fff;
+	width: 380px;
+	height: 300px;
+	border: 1px solid #000;
+	overflow-y: scroll;
+	margin: auto;
+	text-align: left;
+}
+
+#convert {
+	display: block;
+	margin: 10px auto 0 auto;
+	height: 30px;
+	font-size: 14px;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.description {
+	text-align: left;
+}
+
+li {
+	text-align: left;
+}
