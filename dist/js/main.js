@@ -1,4 +1,12 @@
 
+/* Ideas
+
+-To handle paragraph spacing inside of quotes = loop through again and replace "<br>> <br>> " with "<br>> &nbsp;<br>> "
+-^Quotes are weird = now they're using paragraphs?
+   ^I guess I could call the function twice?
+
+*/
+
 var txtEntry = document.getElementById('text-entry');
 var btnConvert = document.getElementById('convert');
 var divOutput = document.getElementById('output');
@@ -13,18 +21,43 @@ btnConvert.addEventListener('click', function() {
 
 function convertToMarkdown(str) {
 
+	//Fixing a quirk:  (Hacky, not a full fix.  A majority fix.)
+	str = str.replace('<b> ', ' <b>');
+	str = str.replace(' </b>', '</b> ');
+	str = str.replace('<i> ', ' <i>');
+	str = str.replace(' </i>', '</i> ');
+	str = str.replace('<strong> ', ' <strong>');
+	str = str.replace(' </strong>', '</strong> ');
+	str = str.replace('<em> ', ' <em>');
+	str = str.replace(' </em>', '</em> ');
+
 	str = replaceAllTag(str, 'strong', '**');	//bold
+	str = replaceAllTag(str, 'b ', '**');		//other form of bold (since Zendesk is now using <b> instead of strong?)
+	str = replaceAllTag(str, 'b>', '**');		//other possibility of bold
+
 	str = replaceAllTag(str, 'em', '_');		//italics
+	str = replaceAllTag(str, 'i ', '_');		//other form of italics
+	str = replaceAllTag(str, 'i>', '_');		//other possibility of italics
+
 	str = replaceAllTag(str, 'div', '');		//div
-	str = replaceAllTag(str, 'p', '');			//p
 	str = replaceAllTag(str, 'span', '');		//span
 	str = convertHeaders(str);					//<h1> thru <h6> to # thru ######
 	str = convertLinks(str);					//<a> to [title](link)
-	str = replaceAllTag(str, 'blockquote', '<br>> ', '<br><br>&amp;nbsp;', 0, -1, quoteBreaks);	//<quoteblock> and its <br> to <br>> 
-															//^For Zendesk Quirk 1, force a break after a quote
+
+	/*Quotes are weird.  Zendesk has started using <p>'s instead of breaks
+	  To handle = 
+	  	replace all breaks first, just in case
+	  	then replace all paragraphs within that blockquote
+	*/
+	str = replaceAllTag(str, 'blockquote', '<tempBQ>', '</tempBQ>', 0, -1, quoteBreaks);	//<quoteblock> and its <br> to <br>> 
+	str = replaceAllTag(str, 'tempBQ', '<br>> ', '<br><br>', 0, -1, quoteParagraphs);
+
 	str = replaceAllTag(str, 'ol', '', '<br>', 0, -1, orderedListItems);			//<ol> and <li> to 1. 
 	str = replaceAllTag(str, 'ul', '', '<br>', 0, -1, unorderedListItems);			//<ul> and <li> to * 
-	str = keepMyDoubleSpaces(str);				//'  ' to &amp;nbsp;
+
+	//now handle the paragraphs, since the ones inside quotes are already taken care of
+	str = replaceAllTag(str, 'p', '');			//p
+	str = keepMyDoubleSpaces(str);				//'  ' to ' &amp;nbsp;'
 
 	return str;
 
@@ -54,6 +87,13 @@ function convertToMarkdown(str) {
 		}
 
 		var tag = '<' + tagName;
+		if (tagName === 'b ' || tagName === 'b>') {
+			tagName = 'b';
+		}
+		if (tagName === 'i ' || tagName === 'i>') {
+			tagName = 'i';
+		}
+
 		var openTagStartIndex = str.indexOf(tag, parentTagStart);
 		var openTagEndIndex;
 
@@ -115,7 +155,12 @@ function convertToMarkdown(str) {
 	}
 
 	function quoteBreaks(str, parentTagStart, parentTagEnd) {
-		str = replaceAllTag(str, 'br', '<br>> ', '', parentTagStart, parentTagEnd);
+		str = replaceAllTag(str, 'br', '<br>> &amp;nbsp;', '', parentTagStart, parentTagEnd);
+		return str;
+	}
+
+	function quoteParagraphs(str, parentTagStart, parentTagEnd) {
+		str = replaceAllTag(str, 'p', '<br>> ', '', parentTagStart, parentTagEnd);
 		return str;
 	}
 
